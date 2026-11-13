@@ -4,7 +4,7 @@ from business_logic import RedMuseos
 red = RedMuseos()
 
 while True:
-    print("===== RED DE MUSEOS DEL CARIBE =====")
+    print("\n===== RED DE MUSEOS DEL CARIBE =====")
     print("1. Crear museo")
     print("2. Registrar los visitantes del día siguiente")
     print("3. Simular días")

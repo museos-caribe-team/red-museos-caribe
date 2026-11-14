@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 from business_logic import RedMuseos
 
 red = RedMuseos()
@@ -52,7 +52,7 @@ while True:
             print("Error:", error)
 
     elif opcion == "2":
-        # Requisito 2: buscar museo
+        # Requisito 2 y 10: buscar museo
         nombre = input("Nombre del museo: ").strip()
         museo = red.buscar_museo(nombre)
         if museo is None:
@@ -72,7 +72,7 @@ while True:
                 print("Error:", error)
 
     elif opcion == "3":
-        # Requisito 3: buscar museo
+        # Requisito 3 y 10: buscar museo
         nombre = input("Nombre del museo: ").strip()
         museo = red.buscar_museo(nombre)
         if museo is None:
@@ -114,7 +114,7 @@ while True:
         print(dias, "días simulados correctamente.")
 
     elif opcion == "4":
-        # Requisito 4: el informe de un museo
+        # Requisitos 4 al 9: informe ampliado de un museo
         nombre = input("Nombre del museo: ").strip()
         museo = red.buscar_museo(nombre)
         if museo is None:
@@ -127,12 +127,42 @@ while True:
         if len(museo.visitantes) == 0:
             print("No tiene días registrados.")
         else:
+            # Requisitos 4 y 5
             print("Días registrados:", len(museo.visitantes))
             print("Visitantes totales:", museo.calcular_total())
             print("Promedio diario:", round(museo.calcular_promedio(), 2))
             print("Porcentaje de asistencia:", museo.calcular_porcentaje(), "%")
-            # Requisito 5: la desviación estándar
             print("Desviación estándar:", museo.calcular_desviacion())
+
+            # Requisito 6
+            print("Día de más visitantes:", museo.encontrar_dia_mas_visitantes())
+            print("Día de menos visitantes:", museo.encontrar_dia_menos_visitantes())
+
+            # Requisito 7
+            baja, media, alta, plena = museo.contar_dias_por_nivel()
+            print("Días en asistencia baja:", baja)
+            print("Días en asistencia media:", media)
+            print("Días en asistencia alta:", alta)
+            print("Días en asistencia plena:", plena)
+
+            # Requisito 8
+            duracion_racha, inicio_racha = museo.encontrar_racha_baja_mas_larga()
+            if duracion_racha == 0:
+                print("Racha más larga en asistencia baja: no tuvo ningún día en asistencia baja.")
+            else:
+                print(f"Racha más larga en asistencia baja: {duracion_racha} días (empezó el {inicio_racha})")
+
+            # Requisito 9
+            hoy = date.today()
+            ultimo_dia = museo.obtener_ultimo_dia_registrado()
+            faltantes = museo.calcular_dias_sin_registrar(hoy)
+            print("Último día registrado:", ultimo_dia)
+            if faltantes == 0:
+                print("Estado del registro: el registro está al día.")
+            else:
+                desde = ultimo_dia + timedelta(days=1)
+                hasta = hoy - timedelta(days=1)
+                print(f"Días sin registrar: {faltantes} (del {desde} al {hasta})")
 
     elif opcion == "5" or opcion == "6":
         print("Esta opción será implementada por el equipo.")

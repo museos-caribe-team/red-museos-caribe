@@ -76,5 +76,3 @@
 - Sin días registrados, se aplica la regla del requisito 4: no mostrar indicadores.
 
 **Prueba propuesta:** para la Casa de la Música, con 50, 80, 130 y 180 visitantes, comprobar desviación estándar 49.5.
-
----

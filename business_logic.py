@@ -71,20 +71,108 @@ class Museo:
         varianza = suma_cuadrados / cantidad_dias
         desviacion = varianza ** 0.5
         return round(desviacion, 2)
+        
+    # Requisito 6: fecha del día con más visitantes (primera aparición en empate)
+    def encontrar_dia_mas_visitantes(self) -> date | None:
+        if len(self.visitantes) == 0:
+            return None
+        indice_max = 0
+        for i in range(1, len(self.visitantes)):
+            if self.visitantes[i] > self.visitantes[indice_max]:
+                indice_max = i
+        return self.fecha_inicio + timedelta(days=indice_max)
 
+    # Requisito 6: fecha del día con menos visitantes (primera aparición en empate)
+    def encontrar_dia_menos_visitantes(self) -> date | None:
+        if len(self.visitantes) == 0:
+            return None
+        indice_min = 0
+        for i in range(1, len(self.visitantes)):
+            if self.visitantes[i] < self.visitantes[indice_min]:
+                indice_min = i
+        return self.fecha_inicio + timedelta(days=indice_min)
+
+    # Método interno auxiliar (Requisitos 7 y 8): clasificar el nivel de un día
+    def clasificar_nivel_dia(self, cantidad: int) -> str:
+        porcentaje_dia = (cantidad / self.aforo) * 100
+        if porcentaje_dia < 30:
+            return "Baja"
+        elif porcentaje_dia < 60:
+            return "Media"
+        elif porcentaje_dia < 85:
+            return "Alta"
+        else:
+            return "Plena"
+
+    # Requisito 7: contar días en cada nivel de asistencia (baja, media, alta, plena)
+    def contar_dias_por_nivel(self) -> tuple[int, int, int, int]:
+        baja = 0
+        media = 0
+        alta = 0
+        plena = 0
+        for cantidad in self.visitantes:
+            nivel = self.clasificar_nivel_dia(cantidad)
+            if nivel == "Baja":
+                baja = baja + 1
+            elif nivel == "Media":
+                media = media + 1
+            elif nivel == "Alta":
+                alta = alta + 1
+            else:
+                plena = plena + 1
+        return baja, media, alta, plena
+
+    # Requisito 8: racha más larga en asistencia baja (longitud y fecha de inicio)
+    def encontrar_racha_baja_mas_larga(self) -> tuple[int, date | None]:
+        racha_actual = 0
+        racha_maxima = 0
+        inicio_actual = None
+        inicio_maxima = None
+
+        for i in range(len(self.visitantes)):
+            if self.clasificar_nivel_dia(self.visitantes[i]) == "Baja":
+                if racha_actual == 0:
+                    inicio_actual = self.fecha_inicio + timedelta(days=i)
+                racha_actual = racha_actual + 1
+                if racha_actual > racha_maxima:
+                    racha_maxima = racha_actual
+                    inicio_maxima = inicio_actual
+            else:
+                racha_actual = 0
+
+        return racha_maxima, inicio_maxima
+
+    # Requisito 9: fecha del último día registrado
+    def obtener_ultimo_dia_registrado(self) -> date | None:
+        cantidad_dias = len(self.visitantes)
+        if cantidad_dias == 0:
+            return None
+        return self.fecha_inicio + timedelta(days=cantidad_dias - 1)
+
+    # Requisito 9: días pendientes por registrar hasta ayer
+    def calcular_dias_sin_registrar(self, fecha_actual: date) -> int:
+        ultimo_dia = self.obtener_ultimo_dia_registrado()
+        if ultimo_dia is None:
+            return 0
+        ayer = fecha_actual - timedelta(days=1)
+        if ultimo_dia >= ayer:
+            return 0
+        return (ayer - ultimo_dia).days
 
 class RedMuseos:
 
     def __init__(self):
         self.museos = []
 
-    def buscar_museo(self, nombre: str):
+    # Requisito 10: buscar museo ignorando espacios laterales y respetando mayúsculas y tildes
+    def buscar_museo(self, nombre: str) -> Museo | None:
+        nombre_limpio = nombre.strip()
         for museo in self.museos:
-            if museo.nombre == nombre.strip():
+            if museo.nombre == nombre_limpio:
                 return museo
         return None
 
-    # Requisito 1: crear un museo
+    # Requisito 1 y 10: crear un museo sin sobrescribir duplicados
     def crear_museo(self, nombre: str, aforo: int, fecha_inicio: date):
         nombre = nombre.strip()
         if nombre == "":
@@ -97,6 +185,5 @@ class RedMuseos:
             raise ValueError("El aforo debe ser mayor o igual a 1")
         museo = Museo(nombre, aforo, fecha_inicio)
         self.museos.append(museo)
-
 
 

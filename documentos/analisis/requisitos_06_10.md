@@ -1,3 +1,5 @@
+# Análisis de requisitos del 6 al 10
+
 ## Requisito 6. El día de más y el de menos visitantes
 
 **Entradas:** cantidades de visitantes de cada día y fecha de inicio del registro.

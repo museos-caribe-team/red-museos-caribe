@@ -9,8 +9,8 @@ while True:
     print("2. Registrar los visitantes del día siguiente")
     print("3. Simular días")
     print("4. El informe de un museo")
-    print("5. Mayor y menor ocupación (pendiente)")
-    print("6. Cargar archivos (pendiente)")
+    print("5. Museo con el porcentaje de asistencia más alto y el más bajo")
+    print("6. Cargar los museos y los visitantes desde archivos")
     print("7. Salir")
 
     opcion = input("Seleccione una opción: ")
@@ -164,8 +164,41 @@ while True:
                 hasta = hoy - timedelta(days=1)
                 print(f"Días sin registrar: {faltantes} (del {desde} al {hasta})")
 
-    elif opcion == "5" or opcion == "6":
-        print("Esta opción será implementada por el equipo.")
+    elif opcion == "5":
+        # Requisito 11: museo con el porcentaje de asistencia más alto y más bajo
+        mas_alto, mas_bajo = red.comparar_asistencia()
+        if mas_alto is None:
+            print("Ningún museo tiene días registrados.")
+        else:
+            print(f"Porcentaje de asistencia más alto: {mas_alto.nombre}, {mas_alto.calcular_porcentaje()} %")
+            print(f"Porcentaje de asistencia más bajo: {mas_bajo.nombre}, {mas_bajo.calcular_porcentaje()} %")
+
+    elif opcion == "6":
+        # Requisito 12: la carga solo se hace con el programa sin museos
+        if len(red.museos) > 0:
+            print("Error: la carga solo se hace con el programa sin museos.")
+            continue
+
+        ruta_museos = input("Ruta del archivo de museos: ").strip().strip('"')
+        resultado = red.cargar_museos(ruta_museos)
+        if resultado is None:
+            print("Error: el archivo no existe.")
+            continue
+        cargados, descartadas = resultado
+        for numero, causa in descartadas:
+            print(f"Línea {numero} descartada: {causa}.")
+        print("Museos cargados:", cargados)
+
+        # Requisito 13: archivo de visitantes
+        ruta_visitantes = input("Ruta del archivo de visitantes: ").strip().strip('"')
+        resultado = red.cargar_visitantes(ruta_visitantes)
+        if resultado is None:
+            print("Error: el archivo no existe.")
+            continue
+        cargados, descartadas = resultado
+        for numero, causa in descartadas:
+            print(f"Línea {numero} descartada: {causa}.")
+        print("Días cargados:", cargados)
 
     elif opcion == "7":
         print("Hasta luego.")
@@ -173,4 +206,3 @@ while True:
 
     else:
         print("Opción no válida.")
-

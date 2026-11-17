@@ -1,5 +1,24 @@
+import os
+import re
 from datetime import date, timedelta
+from fractions import Fraction
 from random import randint
+
+
+# Auxiliar (Requisitos 12 y 13): ¿el texto es un número entero?
+def es_entero(texto: str) -> bool:
+    return re.fullmatch(r"[+-]?[0-9]+", texto.strip()) is not None
+
+
+# Auxiliar (Requisito 12): crear una fecha o devolver None si no es válida
+def crear_fecha(anio: str, mes: str, dia: str) -> date | None:
+    if not (es_entero(anio) and es_entero(mes) and es_entero(dia)):
+        return None
+    try:
+        return date(int(anio), int(mes), int(dia))
+    except ValueError:
+        return None
+
 
 class Museo:
 
@@ -57,6 +76,11 @@ class Museo:
     def calcular_porcentaje(self) -> float:
         porcentaje = self.calcular_promedio() / self.aforo * 100
         return round(porcentaje, 2)
+
+    # Requisito 11: porcentaje de asistencia sin redondear (fracción exacta,
+    # para que dos museos con el mismo porcentaje empaten de verdad)
+    def calcular_porcentaje_exacto(self) -> Fraction:
+        return Fraction(self.calcular_total() * 100, len(self.visitantes) * self.aforo)
 
     # Requisito 5: calcular la desviación estándar poblacional
     def calcular_desviacion(self) -> float:
@@ -172,9 +196,8 @@ class RedMuseos:
                 return museo
         return None
 
-    # Requisito 1 y 10: crear un museo sin sobrescribir duplicados
-    def crear_museo(self, nombre: str, aforo: int, fecha_inicio: date):
-        nombre = nombre.strip()
+    # Requisitos 1 y 12: validar nombre y aforo, en este orden (teclado y archivo)
+    def validar_datos_museo(self, nombre: str, aforo):
         if nombre == "":
             raise ValueError("El nombre no puede estar vacío")
         if self.buscar_museo(nombre) is not None:
@@ -183,7 +206,92 @@ class RedMuseos:
             raise ValueError("El aforo debe ser un número entero")
         if aforo < 1:
             raise ValueError("El aforo debe ser mayor o igual a 1")
+
+    # Requisito 1 y 10: crear un museo sin sobrescribir duplicados
+    def crear_museo(self, nombre: str, aforo: int, fecha_inicio: date):
+        nombre = nombre.strip()
+        self.validar_datos_museo(nombre, aforo)
         museo = Museo(nombre, aforo, fecha_inicio)
         self.museos.append(museo)
 
+    # Requisito 11: museo con el porcentaje de asistencia más alto y más bajo
+    # Compara sin redondear y, si hay empate, conserva el que se creó o cargó primero.
+    # Devuelve (más_alto, más_bajo), o (None, None) si ningún museo tiene días.
+    def comparar_asistencia(self) -> tuple[Museo | None, Museo | None]:
+        mas_alto = None
+        mas_bajo = None
+        for museo in self.museos:
+            if len(museo.visitantes) == 0:
+                continue
+            if mas_alto is None:
+                mas_alto = museo
+                mas_bajo = museo
+                continue
+            if museo.calcular_porcentaje_exacto() > mas_alto.calcular_porcentaje_exacto():
+                mas_alto = museo
+            if museo.calcular_porcentaje_exacto() < mas_bajo.calcular_porcentaje_exacto():
+                mas_bajo = museo
+        return mas_alto, mas_bajo
 
+    # Requisito 12: cargar museos desde un archivo CSV (nombre;aforo;año;mes;día)
+    # Devuelve None si el archivo no existe; si no, (cantidad_cargada, lineas_descartadas)
+    # con lineas_descartadas = [(número_de_línea, causa), ...]
+    def cargar_museos(self, ruta: str):
+        if not os.path.isfile(ruta):
+            return None
+        cargados = 0
+        descartadas = []
+        with open(ruta, encoding="utf-8-sig") as archivo:
+            for numero, linea in enumerate(archivo, start=1):
+                if numero == 1 or linea.strip() == "":
+                    continue  # encabezado y líneas vacías
+                campos = [campo.strip() for campo in linea.rstrip("\r\n").split(";")]
+                if len(campos) != 5:
+                    descartadas.append((numero, "La línea no tiene cinco campos"))
+                    continue
+                nombre, aforo_texto, anio, mes, dia = campos
+                if es_entero(aforo_texto):
+                    aforo = int(aforo_texto)
+                else:
+                    aforo = aforo_texto
+                try:
+                    self.validar_datos_museo(nombre, aforo)
+                    fecha = crear_fecha(anio, mes, dia)
+                    if fecha is None:
+                        raise ValueError("La fecha no es válida")
+                    self.crear_museo(nombre, aforo, fecha)
+                except ValueError as error:
+                    descartadas.append((numero, str(error)))
+                    continue
+                cargados = cargados + 1
+        return cargados, descartadas
+
+    # Requisito 13: cargar visitantes desde un archivo CSV (museo;visitantes)
+    # Devuelve None si el archivo no existe; si no, (días_cargados, lineas_descartadas)
+    def cargar_visitantes(self, ruta: str):
+        if not os.path.isfile(ruta):
+            return None
+        cargados = 0
+        descartadas = []
+        with open(ruta, encoding="utf-8-sig") as archivo:
+            for numero, linea in enumerate(archivo, start=1):
+                if numero == 1 or linea.strip() == "":
+                    continue
+                campos = [campo.strip() for campo in linea.rstrip("\r\n").split(";")]
+                if len(campos) != 2:
+                    descartadas.append((numero, "La línea no tiene dos campos"))
+                    continue
+                museo = self.buscar_museo(campos[0])
+                if museo is None:
+                    descartadas.append((numero, "No hay un museo con ese nombre"))
+                    continue
+                if not es_entero(campos[1]):
+                    descartadas.append((numero, "Los visitantes deben ser un número entero"))
+                    continue
+                try:
+                    museo.registrar_visitantes(int(campos[1]))
+                except ValueError as error:
+                    descartadas.append((numero, str(error)))
+                    continue
+                cargados = cargados + 1
+        return cargados, descartadas

@@ -1,4 +1,3 @@
-
 # 🏛️ Red de Museos del Caribe
 
 Sistema de gestión y análisis de visitantes de la **Red de Museos del Caribe**, desarrollado en Python para la asignatura **Fundamentos de Programación** de la Universidad del Magdalena.
@@ -8,7 +7,6 @@ Sistema de gestión y análisis de visitantes de la **Red de Museos del Caribe**
 ## 👥 Equipo de desarrollo
 
 <div align="center">
-
 
 <br>
 
@@ -25,7 +23,7 @@ Sistema de gestión y análisis de visitantes de la **Red de Museos del Caribe**
     </td>
     <td align="center" width="190">
       <a href="https://github.com/dvorjuela">
-        <img src="https://github.com/dvorjuela.png" width="90" alt="Dana Orjuela">
+        <img src="https://github.com/dvorjuela.png" width="90" alt="Valentina Orjuela">
         <br>
         <b>Valentina Orjuela</b>
       </a>
@@ -50,8 +48,7 @@ Sistema de gestión y análisis de visitantes de la **Red de Museos del Caribe**
 
 ## 📁 Estructura del proyecto
 
-```text id="6w8rba"
-
+```text
 red-museos-caribe/
 │
 ├── README.md
@@ -62,16 +59,20 @@ red-museos-caribe/
 └── documentos/
     │
     ├── README.md
-    ├── Casos_de_Verificacion.pdf
     ├── Informe uso de IA.pdf
     ├── Informe_Integral.pdf
     │
-    └── analisis/
-        ├── informe general.pdf
-        ├── requisitos_01_05.md
-        ├── requisitos_06_10.md
-        └── requisitos_11_14.md
-
+    ├── analisis/
+    │   ├── informe general.pdf
+    │   ├── requisitos_01_05.md
+    │   ├── requisitos_06_10.md
+    │   └── requisitos_11_14.md
+    │
+    └── pruebas/
+        ├── README.md
+        ├── Casos_de_Verificacion.pdf
+        ├── museoprueba.csv
+        └── visitantesprueba.csv
 ```
 
 ---
@@ -83,13 +84,9 @@ red-museos-caribe/
 | 📋 Análisis de requisitos | [Informe general](documentos/analisis/informe%20general.pdf) |
 | 📘 Informe integral | [Informe integral](documentos/Informe_Integral.pdf) |
 | 💻 Código fuente | [Lógica del negocio](business_logic.py) · [Interfaz de usuario](user_interface.py) |
-| 🧪 Casos de verificación | [Ver evidencias](documentos/Casos_de_Verificacion.pdf) |
+| 🧪 Casos de verificación | [Ver evidencias](documentos/pruebas/Casos_de_Verificacion.pdf) · [Archivos de prueba](documentos/pruebas/) |
 | 🎥 Video explicativo | [Ver en YouTube](https://youtu.be/SWabRb_olqo) |
 | 🤖 Informe de uso de IA | [Ver informe](documentos/Informe%20uso%20de%20IA.pdf) |
 | 📊 Gestión del proyecto | [Tablero Kanban](https://github.com/orgs/museos-caribe-team/projects/3) |
 
 ---
-
-<div align="center">
-
-</div>

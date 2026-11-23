@@ -51,34 +51,27 @@ Sistema de gestión y análisis de visitantes de la **Red de Museos del Caribe**
 ## 📁 Estructura del proyecto
 
 ```text id="6w8rba"
+
 red-museos-caribe/
 │
 ├── README.md
-│
+├── .gitignore
 ├── business_logic.py
-│   └── Lógica del programa y validaciones
-│
 ├── user_interface.py
-│   └── Menú e interacción con el usuario
 │
 └── documentos/
     │
-    ├── Casos_de_Verificacion.pdf
-    │   └── Pruebas y evidencias del programa
-    │
-    ├── Informe_Integral.pdf
-    │   └── Desarrollo de los incrementos
-    │
-    ├── Informe uso de IA.pdf
-    │   └── Uso de inteligencia artificial
-    │
     ├── README.md
+    ├── Casos_de_Verificacion.pdf
+    ├── Informe uso de IA.pdf
+    ├── Informe_Integral.pdf
     │
     └── analisis/
         ├── informe general.pdf
         ├── requisitos_01_05.md
         ├── requisitos_06_10.md
         └── requisitos_11_14.md
+
 ```
 
 ---

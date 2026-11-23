@@ -27,7 +27,7 @@ Sistema de gestión y análisis de visitantes de la **Red de Museos del Caribe**
       <a href="https://github.com/dvorjuela">
         <img src="https://github.com/dvorjuela.png" width="90" alt="Dana Orjuela">
         <br>
-        <b>Dana Orjuela</b>
+        <b>Valentina Orjuela</b>
       </a>
       <br>
       <sub>@dvorjuela</sub>
